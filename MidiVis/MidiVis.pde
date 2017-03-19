@@ -13,7 +13,8 @@ class MidiStatus {
   }
 } 
 
-MidiBus myBus; // The MidiBus
+Spout _spout;
+MidiBus _myBus; // The MidiBus
 
 MidiStatus[][] midiStatus;
 
@@ -29,19 +30,22 @@ void setup() {
   }
   
   
-  size(1800, 950);
+  size(1800, 950, P3D);
   background(0);
 
   MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
 
 
-  myBus = new MidiBus(this, "LiveToArena", "ArenaToLive"); // Create a new MidiBus with no input device and the default Java Sound Synthesizer as the output device.
+  _myBus = new MidiBus(this, "LiveToArena", "ArenaToLive");
+  _spout = new Spout(this);
+  _spout.createSender("vizer Spout Out");
+
   
   String[] fontList = PFont.list();
   printArray(fontList);
   
-  font1 = createFont("impact.ttf", 32);
-  font2 = createFont("impact.ttf", 38);
+  font1 = createFont("C:\\Windows\\Fonts\\impact.ttf", 32);
+  font2 = createFont("C:\\Windows\\Fonts\\calibri.ttf", 38);
 
 }
 
@@ -195,8 +199,8 @@ void drawGuitar(float x, float y, float w, float h) {
     
     if (midiStatus[0][pitch].isNoteOn)
       isNoteVisible = midiStatus[0][pitch].velocity;
-    else if (millis() - midiStatus[0][pitch].milliStamp < 100){
-      isNoteVisible = 127 - (millis() - midiStatus[0][pitch].milliStamp);
+    else if (millis() - midiStatus[0][pitch].milliStamp < 200){
+      isNoteVisible = 200 - (millis() - midiStatus[0][pitch].milliStamp);
     }
     
     if(isNoteVisible > 0) {
@@ -228,29 +232,54 @@ void drawGuitar(float x, float y, float w, float h) {
             stringY = y + stringDistance * 5.5;
             break;
         }
-        
-      if (offset > -1 && offset < 24) {
-        fill(isNoteVisible / 2, 0, 0, isNoteVisible * 2);
-        ellipse(x  + bw / 2 + offset * bw, stringY, 25, 35) ;
-
-        fill(0, 0, 0);
-        textSize(38);
-        text(toMidiNote(pitch % 12),  x  + bw / 2 + offset * bw - 5, stringY + 5) ;
-
-        int n = pitch % 12;
-        fill((n % 3) * 120, (n % 5) * 63, pitch*2);
-        textSize(32);
-        text(toMidiNote(n),  x  + bw / 2 + offset * bw - 5, stringY + 5) ;
+          
+        if (offset > -1 && offset < 24) {
+          fill(isNoteVisible / 2, 0, 0, isNoteVisible * 5);
+          ellipse(x  + bw / 2 + offset * bw, stringY, 25, 35) ;
+  
+          fill(0, 0, 0);
+          textSize(38);
+          text(toMidiNote(pitch % 12),  x  + bw / 2 + offset * bw - 5, stringY + 5) ;
+  
+          int n = pitch % 12;
+          fill((n % 3) * 120, (n % 5) * 63, pitch*2);
+          textSize(32);
+          text(toMidiNote(n),  x  + bw / 2 + offset * bw - 5, stringY + 5) ;
+        }  
       }
-      }
-       
     }
   }
 }
 
+void drawBeatyNote() {
+  // draw notes
+  textFont(font1);
+  int noteCrossMillis = 3000;
+  int nowMillis = millis();
+  for(int pitch = 0; pitch < 128; pitch++){
+    int noteAge = nowMillis - midiStatus[0][pitch].milliStamp;
+    if (midiStatus[0][pitch].isNoteOn) {
+      //isNoteVisible = midiStatus[0][pitch].velocity;
+      if (noteAge < noteCrossMillis) {
+        fill(0, 0, 0);
+        textSize(120);
+        float y = height - (((float)noteAge / (float)noteCrossMillis)  * (float)height);
+        text(toMidiNote(pitch % 12),  500, y);
+      }
+    }
+    else {
+      if (noteAge < 1100) {
+        fill(0, 0, 0);
+        textSize(120);
+        float y = height - (((float)noteAge / (float)noteCrossMillis)  * (float)height);
+        text(toMidiNote(pitch % 12),  500, y);
+      }
+    }
+  }
+}
 
 void draw() {
-  background(0);
+  background(100,0,0);
   drawGuitar(0, 20, 1800, 160);
 
   drawPianoKeyboard(0, 200, 450, 280, 5); 
@@ -268,6 +297,10 @@ void draw() {
   
   textFont(font1);
   
+  drawBeatyNote();
+  
+    _spout.sendTexture();
+
   //for (int channel = 0; channel < 16; channel++) {
   //  for (int pitch = 0; pitch < 128; pitch++) {
   //    int since = millis() - midiStatus[channel][pitch].milliStamp;
