@@ -1,4 +1,5 @@
 
+
 int clipLengthSeconds = 4;
 float fr = 25; // FrameRate
 boolean saveFrames = true;
