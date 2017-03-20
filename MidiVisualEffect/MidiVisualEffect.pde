@@ -63,7 +63,7 @@ void draw() {
 
 ////////////////////////////////////////////////////////// Key press
 void keyPressed() {
-  Particle p = new NoteParticle(str(key),44);
+  Particle p = new NoteParticle(str(key),1);
   _particles.add(p);
 }
 
