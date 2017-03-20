@@ -63,7 +63,7 @@ void draw() {
 
 ////////////////////////////////////////////////////////// Key press
 void keyPressed() {
-  Particle p = new NoteParticle(str(key),1);
+  ParticleBase p = new TextParticle(str(key),1);
   _particles.add(p);
 }
 
@@ -79,15 +79,15 @@ void noteOn(int channel, int pitch, int velocity) {
   if (channel == 9) {
     if (pitch == 36) {
       println("Adding Kick particle");
-      Particle p = new NoteParticle("Kick", 2);
+      ParticleBase p = new TextParticle("Kick", 2);
       _particles.add(p);
     }
    if (pitch == 37) { 
-      Particle p = new NoteParticle("Snare", 1);
+      ParticleBase p = new TextParticle("Snare", 1);
       _particles.add(p);
     }
    if (pitch == 38) { 
-      Particle p = new NoteParticle("hihats", 0);
+      ParticleBase p = new TextParticle("hihats", 0);
       _particles.add(p);
     }
   }

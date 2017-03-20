@@ -1,10 +1,11 @@
 
-class NoteParticle extends Particle {
-  
+class TextParticle extends ParticleBase {
+
+  String _text;
   int _fontIndex;
   
-  public NoteParticle(String name, int fontIndex) {
-    super(name);
+  public TextParticle(String text, int fontIndex) {
+    _text = text;
     _fontIndex = fontIndex;
   }
   
@@ -19,13 +20,13 @@ class NoteParticle extends Particle {
     
     
     textFont(_fonts.get(_fontIndex));
-    text(text, 0, 0);
+    text(_text, 0, 0);
 
     if (false) {
       rotateX(radians(t_ms / 8));
       rotateY(radians(t_ms / 10));
       scale(1.5);
-      text(text, 0, 15, 200 - af);
+      text(_text, 0, 15, 200 - af);
     }
   }
 }

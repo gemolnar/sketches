@@ -1,10 +1,6 @@
 
-abstract class Particle {
+abstract class ParticleBase {
   int millistamp = millis();
-  String text;
-  public Particle(String name) {
-    text = name;
-  }
   
   int getAge() {
     return millis() - millistamp;
