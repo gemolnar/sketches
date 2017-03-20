@@ -72,7 +72,11 @@ void keyPressed() {
 
 ////////////////////////////////////////////////////////// General MIDI message
 void midiMessage(javax.sound.midi.MidiMessage message, long timeStamp) {
-  println("Message received. Status: " + message.getStatus() + ", Timestamp: " + timeStamp);
+  println("MidiMessage received. Status: " + message.getStatus() + ", Timestamp: " + timeStamp);
+}
+
+void rawMidi(byte[] data) {
+  println("RawMidiMessage received. Length: " + data.length );
 }
 
 ////////////////////////////////////////////////////////// MIDI Note on
