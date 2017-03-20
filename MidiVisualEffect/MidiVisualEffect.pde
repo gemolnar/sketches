@@ -24,6 +24,7 @@ void setup() {
   size(1200, 800, P3D); 
   println ("Size: " + width + "x" + height);
   lights();
+  smooth(3);
   background(0);
   _spout = new Spout(this);
   _spout.createSender("MIDI-Vizer #" + MIDI_IN);
@@ -63,7 +64,9 @@ void draw() {
 
 ////////////////////////////////////////////////////////// Key press
 void keyPressed() {
-  ParticleBase p = new TextParticle(str(key),1);
+  ParticleBase p = 
+    //new TextParticle(str(key),1);
+    new SphereParticle(110);
   _particles.add(p);
 }
 
