@@ -45,7 +45,7 @@ void setup() {
   printArray(fontList);
   
   font1 = createFont("C:\\Windows\\Fonts\\impact.ttf", 32);
-  font2 = createFont("C:\\Windows\\Fonts\\calibri.ttf", 38);
+  font2 = createFont("C:\\Windows\\Fonts\\calibri.ttf", 22);
 
 }
 
@@ -98,6 +98,8 @@ void drawBass(float x, float y, float w, float h) {
   }
   
   // draw notes
+  translate(0,0,2);
+  
   textFont(font2);
   for(int pitch = 0; pitch < 128; pitch++){
     int isNoteVisible = 0;
@@ -130,16 +132,17 @@ void drawBass(float x, float y, float w, float h) {
             break;
         }
         
-      if (offset > -1 && offset < 24) {
-        fill(isNoteVisible / 2, 0, 0, isNoteVisible * 2);
-        ellipse(x  + bw / 2 + offset * bw, stringY, 25, 35) ;
-        fill(255, 255, 255);
-        text(toMidiNote(pitch % 12),  x  + bw / 2 + offset * bw - 5, stringY + 5) ;
+        if (offset > -1 && offset < 24) {
+          fill(isNoteVisible / 2, 0, 0, isNoteVisible * 2);
+          ellipse(x  + bw / 2 + offset * bw, stringY, 25, 35) ;
+          fill(255, 255, 255);
+          text(toMidiNote(pitch % 12),  x  + bw / 2 + offset * bw - 5, stringY + 5) ;
+        }
       }
-      }
-       
     }
   }
+  translate(0,0,-2);
+
 }
 
 
@@ -393,7 +396,10 @@ void drawBlackKey(int keyPositionOffset, float x, float y, float kw, float kh, b
     strokeWeight(1);
   }
   float bkw = kw * 0.7;
+  translate(0, 0, 2);
   rect(x + keyPositionOffset * kw + (kw - bkw / 2) , y, bkw, kh * 0.6, 0, 0, 7, 7);
+  translate(0, 0, -2);
+  
   textFont(font1);
   if (noteOn)
     fill(200);
@@ -410,7 +416,7 @@ void drawPianoKeyboard(float x, float y, float w, float h, int octave) {
   strokeWeight(10);  // Default
 
   float whiteKeyWidth = w / 7;
-  
+    
   for (int note = 0; note < 12; note++) {
    boolean noteOn = midiStatus[0][octave*12 + note].isNoteOn;
    switch(note) {
@@ -458,6 +464,7 @@ void drawPianoKeyboard(float x, float y, float w, float h, int octave) {
        break;
     } 
   }
+
   
   //float kw = w / 7;  
   //for(int ki = 0; ki < 7; ki++) {
@@ -489,6 +496,43 @@ void noteOff(int channel, int pitch, int velocity) {
   midiStatus[channel][pitch].milliStamp = millis();
   midiStatus[channel][pitch].velocity = velocity;
 }
+
+void keyPressed() {
+  int pitch = convertKeyToMidiNote(key);
+  if (pitch != 0) {   
+    noteOn(0, pitch, 127);
+  }
+}
+
+void keyReleased() {
+  int pitch = convertKeyToMidiNote(key);
+  if (pitch != 0) {
+    noteOff(0, pitch, 0);
+  }
+}
+
+int convertKeyToMidiNote(char k) {
+  int basePitch = 36;
+  
+  switch(k) {
+    case 'c':
+      return basePitch + 0;
+    case 'd':
+      return basePitch + 2;
+    case 'e':
+      return basePitch + 4;
+    case 'f':
+      return basePitch + 5;
+    case 'g':
+      return basePitch + 7;
+    case 'a':
+      return basePitch + 9;
+    case 'b':
+      return basePitch + 11;   
+  }
+  return 0;
+}
+
 
 void controllerChange(int channel, int number, int value) {
   // Receive a controllerChange
