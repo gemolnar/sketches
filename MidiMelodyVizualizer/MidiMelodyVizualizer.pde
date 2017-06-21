@@ -36,7 +36,7 @@ void setup() {
   MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
 
 
-  _myBus = new MidiBus(this, "LiveToArena", "ArenaToLive"); // Create a new MidiBus with no input device and the default Java Sound Synthesizer as the output device.
+  _myBus = new MidiBus(this, "Ableton", "ResolumeController"); // Create a new MidiBus with no input device and the default Java Sound Synthesizer as the output device.
   _spout = new Spout(this);
   _spout.createSender("vizer Spout Out");
 
